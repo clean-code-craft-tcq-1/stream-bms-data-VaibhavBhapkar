@@ -12,10 +12,11 @@ jobs:
 
     runs-on: windows-latest  # For a list of available runner types, refer to
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
-
+  
     env:
-      Solution_Name: \Sender\BMS_Streaming.sln
-      Test_Project_Path: \Sender\BMS_Streaming.Test\BMS_Streaming.Test.csproj                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
+      working-directory: Sender\
+      Solution_Name: BMS_Streaming.sln
+      Test_Project_Path: BMS_Streaming.Test\BMS_Streaming.Test.csproj                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
 
     steps:
     - name: Checkout
