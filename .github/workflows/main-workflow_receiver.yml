@@ -42,5 +42,3 @@ jobs:
         retention-days: 1
     - name: Build main class
       run: mvn compile exec:java -Dexec.mainClass="receiver.ReceiverApp"
-      
-	
