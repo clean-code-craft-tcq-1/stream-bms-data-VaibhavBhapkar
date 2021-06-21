@@ -1,0 +1,10 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/Sender/.vs/BMS_Streaming
+/Sender/BMS_Streaming/bin/Debug/netcoreapp3.1
+/Sender/BMS_Streaming/obj
+/Sender/BMS_Streaming.Test/bin/Debug/netcoreapp3.1
+/Sender/BMS_Streaming.Test/obj
