@@ -24,7 +24,7 @@ public class StreamReaderImplTest {
     private InputStream       mockInputStream;
 
     @Before
-    public void setup() {
+    public void setup() throws Exception {
         mockInputStreamReader = Mockito.mock(InputStreamReader.class);
         mockBufferedReader = Mockito.mock(BufferedReader.class);
         mockInputStream = Mockito.mock(InputStream.class);
