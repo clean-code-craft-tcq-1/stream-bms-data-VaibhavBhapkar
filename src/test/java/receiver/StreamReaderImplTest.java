@@ -29,6 +29,8 @@ public class StreamReaderImplTest {
         mockBufferedReader = Mockito.mock(BufferedReader.class);
         mockInputStream = Mockito.mock(InputStream.class);
         streamReaderImpl = new StreamReaderImpl(mockInputStream);
+		PowerMockito.whenNew(InputStreamReader.class).withAnyArguments().thenReturn(mockInputStreamReader);
+        PowerMockito.whenNew(BufferedReader.class).withArguments(Mockito.any(InputStreamReader.class)).thenReturn(mockBufferedReader);
     }
 
     @Test
@@ -36,10 +38,7 @@ public class StreamReaderImplTest {
         String batteryReading1 = "{\"temperature\":50,\"stateOfCharge\":9.17}";
         String batteryReading2 = "{\"temperature\":85,\"stateOfCharge\":5.77}";
         String batteryReading3 = "Streaming stop event is triggered";
-        PowerMockito.whenNew(InputStreamReader.class).withAnyArguments().thenReturn(mockInputStreamReader);
-        PowerMockito.whenNew(BufferedReader.class).withArguments(Mockito.any(InputStreamReader.class)).thenReturn(mockBufferedReader);
-        String readLine = mockBufferedReader.readLine();
-        Mockito.when(readLine).thenReturn(batteryReading1, batteryReading2, batteryReading3);
+        Mockito.when(mockBufferedReader.readLine()).thenReturn(batteryReading1, batteryReading2, batteryReading3);
         Map<String, Double> parametersMap = streamReaderImpl.getAndProcessData(mockBufferedReader);
         Assert.assertNotNull(parametersMap);
         Assert.assertEquals(85, parametersMap.get(ReceiverConstants.TEMPERATURE), 1e-15);
@@ -51,10 +50,7 @@ public class StreamReaderImplTest {
 
     @Test(expected = ApplicationException.class)
     public void readAndProcessBatteryDataTest_throwException() throws Exception {
-        PowerMockito.whenNew(InputStreamReader.class).withAnyArguments().thenReturn(mockInputStreamReader);
-        PowerMockito.whenNew(BufferedReader.class).withArguments(Mockito.any(InputStreamReader.class)).thenReturn(mockBufferedReader);
-        String readLine = mockBufferedReader.readLine();
-        Mockito.when(readLine).thenThrow(new IOException());
+        Mockito.when(mockBufferedReader.readLine()).thenThrow(new IOException());
         streamReaderImpl.readAndProcessBatteryData();
     }
 
