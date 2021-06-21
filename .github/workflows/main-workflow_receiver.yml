@@ -18,16 +18,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Install jscpd
+      run: sudo npm install -g jscpd
+    - name: Check duplications
+      run: jscpd . --min-lines 3 --min-tokens 48 --threshold 0
     - name: Install lizard
       run: pip install lizard
 
     - name: Limit complexity
-      run: $HOME/.local/bin/lizard --CCN 3
-	- name: Install jscpd
-      run: sudo npm install -g jscpd
-
-    - name: Check duplications
-      run: jscpd . --min-lines 3 --min-tokens 48 --threshold 0
+      run: $HOME/.local/bin/lizard --CCN 4
+      
     - name: Set up JDK 1.8
       uses: actions/setup-java@v1
       with:
