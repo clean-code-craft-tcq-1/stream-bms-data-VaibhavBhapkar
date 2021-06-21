@@ -20,7 +20,5 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-        - name: Build main class
-      run: mvn compile exec:java -Dexec.mainClass="receiver.ReceiverApp"
     - name: Run Sender and Receiver using pipe command
       run: dotnet run --project Sender\BMS_Streaming\BMS_Streaming.csproj|mvn compile exec:java -Dexec.mainClass="receiver.ReceiverApp"

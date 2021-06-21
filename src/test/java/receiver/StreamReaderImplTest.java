@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -31,17 +32,21 @@ public class StreamReaderImplTest {
     }
 
     @Test
-    public void readAndProcessBatteryDataTest() throws Exception {
-        String batteryReading1 = "Application has started - Getting Battery Parameters data.";
-        String batteryReading2 = "Press Ctrl-C to end";
-        String batteryReading3 = "{\"temperature\":50,\"stateOfCharge\":4.17}";
-        String batteryReading4 = "{\"temperature\":85,\"stateOfCharge\":5.77}";
-        String batteryReading5 = "Streaming stop event is triggered";
+    public void getAndProcessDataTest() throws Exception {
+        String batteryReading1 = "{\"temperature\":50,\"stateOfCharge\":9.17}";
+        String batteryReading2 = "{\"temperature\":85,\"stateOfCharge\":5.77}";
+        String batteryReading3 = "Streaming stop event is triggered";
         PowerMockito.whenNew(InputStreamReader.class).withAnyArguments().thenReturn(mockInputStreamReader);
         PowerMockito.whenNew(BufferedReader.class).withArguments(Mockito.any(InputStreamReader.class)).thenReturn(mockBufferedReader);
         String readLine = mockBufferedReader.readLine();
-        Mockito.when(readLine).thenReturn(batteryReading1, batteryReading2, batteryReading3, batteryReading4, batteryReading5);
-        streamReaderImpl.readAndProcessBatteryData();
+        Mockito.when(readLine).thenReturn(batteryReading1, batteryReading2, batteryReading3);
+        Map<String, Double> parametersMap = streamReaderImpl.getAndProcessData(mockBufferedReader);
+        Assert.assertNotNull(parametersMap);
+        Assert.assertEquals(85, parametersMap.get(ReceiverConstants.TEMPERATURE), 1e-15);
+        Assert.assertEquals(9.17, parametersMap.get(ReceiverConstants.STATE_OF_CHARGE), 1e-15);
+        Assert.assertEquals(67.5, parametersMap.get(ReceiverConstants.AVERAGE_TEMPERATURE), 1e-15);
+        Assert.assertEquals(7.47, parametersMap.get(ReceiverConstants.AVERAGE_SOC), 1e-15);
+
     }
 
     @Test(expected = ApplicationException.class)
@@ -54,8 +59,17 @@ public class StreamReaderImplTest {
     }
 
     @Test
-    public void getMaxParametertest() {
+    public void getMaxParameterTest() {
         double maxValue = streamReaderImpl.getMaxParameter(45, 76);
         Assert.assertEquals(76, maxValue, 1e-15);
+    }
+
+    @Test
+    public void getBatterParametersTest() throws IOException {
+        String batteryReading = "{\"temperature\":50,\"stateOfCharge\":4.17}";
+        BatteryParameter batteryParameter = streamReaderImpl.getBatteryParameters(batteryReading);
+        Assert.assertEquals(50, batteryParameter.getTemperature(), 1e-15);
+        Assert.assertEquals(4.17, batteryParameter.getStateofCharge(), 1e-15);
+
     }
 }
